@@ -2,7 +2,7 @@
 
 angular.module('missileDefense.launcherService', [])
   .factory('LauncherService', ['MouseService', 'ProjectileService', 'UtilService', 'ImageService', 
-  function(mouseService, projectileService, utilService, imageService) {
+  function(MouseService, ProjectileService, UtilService, ImageService) {
     var launchers = [];
     var launcherRadius = 10;
     var launcherBarrelLength = 40;
@@ -33,9 +33,9 @@ angular.module('missileDefense.launcherService', [])
     }
 
     return {
-      create: function(ctxWidth, ctxHeight, level) {
-        var level = window.gameData[level];
-        level.launchers.forEach(function(launcher) {
+      init: function(ctxWidth, ctxHeight, level) {
+        var levelData = window.gameData[level];
+        levelData.launchers.forEach(function(launcher) {
           launchers.push({
             x: launcher.x * ctxWidth,
             y: launcher.y * ctxHeight,
@@ -44,21 +44,21 @@ angular.module('missileDefense.launcherService', [])
             muzzle: {}
           });
         });
-        if (level.launcherImage) {
-          imageService.loadImage(level.launcherImage)
+        if (levelData.launcherImage) {
+          ImageService.loadImage(levelData.launcherImage)
             .then(function(image) {
               launcherImage = image;
-              if (level.launcherImageCenter) {
-                launcherImageCenter = level.launcherImageCenter;
+              if (levelData.launcherImageCenter) {
+                launcherImageCenter = levelData.launcherImageCenter;
               }
             })
             .catch(function() {
-              console.error('launcher image file ' + level.launcherImage + ' not loaded');
-            })
+              console.error('launcher image file ' + levelData.launcherImage + ' not loaded');
+            });
         }
       },
       physics: function (dt) {
-        var mousePos = mouseService.getPos();
+        var mousePos = MouseService.getPos();
         launchers.forEach(function(launcher) {
 
           launcher.angle = - (Math.atan2(mousePos.x - launcher.x, mousePos.y - launcher.y) - Math.PI/2);
@@ -67,11 +67,11 @@ angular.module('missileDefense.launcherService', [])
         });
       },
       fireProjectile: function () {
-        var mousePos = mouseService.getPos();
+        var mousePos = MouseService.getPos();
         launchers.forEach(function(launcher) {
 
-          projectileService.create(launcher.muzzle.x, launcher.muzzle.y, launcher.angle,
-            utilService.distance(launcher.muzzle.x - mousePos.x, launcher.muzzle.y - mousePos.y));
+          ProjectileService.create(launcher.muzzle.x, launcher.muzzle.y, launcher.angle,
+            UtilService.distance(launcher.muzzle.x - mousePos.x, launcher.muzzle.y - mousePos.y));
         });
       },
       draw: function (ctx) {

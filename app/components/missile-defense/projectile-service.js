@@ -17,7 +17,7 @@ angular.module('missileDefense.projectileService', [])
               if (levelData.projectileImageCenter) {
                 projectileImageCenter = levelData.projectileImageCenter;
               }
-            })
+            });
         }
       },
       create: function(x, y, angle, distance) {
@@ -75,4 +75,4 @@ angular.module('missileDefense.projectileService', [])
         return projectiles;
       }
     };
-  }])
+  }]);

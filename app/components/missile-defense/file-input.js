@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('missileDefense.fileInput', [])
   .directive('fileInput', ['$rootScope', function($rootScope) {
     return {
@@ -24,7 +26,7 @@ angular.module('missileDefense.fileInput', [])
               return;
             }
             $rootScope.$broadcast('fileInputReceived', JSON.parse(buffer));
-          }
+          };
           reader.readAsText(file);
         }
 

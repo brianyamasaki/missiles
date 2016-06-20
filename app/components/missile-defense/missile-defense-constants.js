@@ -1,6 +1,8 @@
 var gameData = [
 
   { // level 0
+    levelNumber: 0,
+    levelName: "In the Beginning",
     launchers: [
       {x: 0.5, y: 0.5}
     ],
@@ -31,6 +33,8 @@ var gameData = [
     ]
   },
   { // level 1
+    levelNumber: 1,
+    levelName: "First Custom Level",
     launcherImage: 'img/missile-defense/img/launcher1.png',
     launcherImageCenter: {x: -25, y: -25 },
     launchers: [
@@ -41,7 +45,7 @@ var gameData = [
     projectileImage: 'img/missile-defense/img/bullet.png',
     projectileImageCenter: {x: -10, y:-10},
     cityImage: 'img/missile-defense/img/city.png',
-    cityImageCenter: { x: 0, y: -50},
+    cityImageCenter: { x: -50, y: -50},
     cities: [
       { x: 0.15, y: .8},
       { x: 0.3, y: .8},

@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('missileDefense.groundService', [])
-  .factory('GroundService', ['UtilService', function(utilService) {
+  .factory('GroundService', ['UtilService', function(UtilService) {
     var context = { };
     var grounds;
     return {
-      create: function (ctxWidth, ctxHeight, level) {
+      init: function (ctxWidth, ctxHeight, level) {
         context.dx = ctxWidth;
         context.dy = ctxHeight;
         grounds = [];
@@ -47,7 +47,7 @@ angular.module('missileDefense.groundService', [])
               point.x <= polygon.bounds.xMax && 
               point.y >= polygon.bounds.yMin &&
               point.y <= polygon.bounds.yMax) {
-            inside = utilService.isPointInPolygon(point, polygon.points);
+            inside = UtilService.isPointInPolygon(point, polygon.points);
           }
           if (inside) {
             break;

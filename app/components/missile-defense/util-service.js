@@ -50,8 +50,7 @@ angular.module('missileDefense.utilService' , [])
             xj = polyp[j].x,
             yj = polyp[j].y;
 
-          var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
           if (intersect) inside = !inside;
         }
 

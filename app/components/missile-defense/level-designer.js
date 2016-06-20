@@ -2,7 +2,7 @@
 
 angular.module('myApp.levelDesigner', [])
   .directive('levelDesigner', ['ToolbarService', 
-    function(toolbarService) {
+    function(ToolbarService) {
 
       return {
         restrict: 'E',
@@ -27,7 +27,7 @@ angular.module('myApp.levelDesigner', [])
             ctx = scope.ctx = element[0].getContext('2d');
 
             function init() {
-              toolbarService.init(ctxWidth, ctxHeight);
+              ToolbarService.init(ctxWidth, ctxHeight);
             }
 
             function drawFrame(now) {
@@ -36,7 +36,7 @@ angular.module('myApp.levelDesigner', [])
               ctx.fillRect(0,0,ctxWidth,ctxHeight);
               ctx.strokeRect(0,0,ctxWidth,ctxHeight);
 
-              toolbarService.draw(ctx);
+              ToolbarService.draw(ctx);
               window.requestAnimationFrame(drawFrame);          
             }
 

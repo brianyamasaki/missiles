@@ -1,24 +1,24 @@
 'use strict';
 
 angular.module('missileDefense.explosionService', [])
-  .factory('ExplosionService', [ 'EnemyMissileService', 'UtilService', function(enemyMissileService, utilService) {
+  .factory('ExplosionService', [ 
+  function() {
     var explosions = [];
     var options = {
       tLifetime: 1500,
-      radiusDefault: 30
+      radiusDefault: 30,
+      fillStyle: '#ddaa66'
     };
 
     return {
-      create: function (x, y, radius) {
-        if (!radius) {
-          radius = options.radiusDefault;
-        }
+      create: function (x, y, radius, fillStyle) {
         explosions.push({
           x: x,
           y: y,
           tCreate: new Date().getTime(),
-          radiusMax: radius,
+          radiusMax: radius || options.radiusDefault,
           radiusCur: 0,
+          fillStyle: fillStyle || options.fillStyle,
           tLifetime: options.tLifetime
         });
       },
@@ -30,24 +30,27 @@ angular.module('missileDefense.explosionService', [])
             return false;
           } else {
             explosion.radiusCur = Math.sin(((now - explosion.tCreate) / explosion.tLifetime) * Math.PI) * explosion.radiusMax;
-            missiles = enemyMissileService.getMissiles();
-            missiles.forEach(function(missile) {
-              if (utilService.isWithin(explosion.x - missile.x, explosion.y - missile.y, explosion.radiusCur + missile.radius)) {
-                missile.destroyed = true;
-              }
-            });
+            // missiles = EnemyMissileService.getMissiles();
+            // missiles.forEach(function(missile) {
+            //   if (UtilService.isWithin(explosion.x - missile.x, explosion.y - missile.y, explosion.radiusCur + missile.radius)) {
+            //     missile.destroyed = true;
+            //   }
+            // });
             return true;
           }
         });
       },
       draw: function(ctx) {
         explosions.forEach(function(explosion) {
-          ctx.fillStyle = 'orange';
+          ctx.fillStyle = explosion.fillStyle;
           ctx.beginPath();
           ctx.arc(explosion.x, explosion.y, explosion.radiusCur, 0, Math.PI*2);
           ctx.closePath();
           ctx.fill();
         });
+      },
+      getExplosions: function () {
+        return explosions;
       }
     };
   }]);

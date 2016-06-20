@@ -30,5 +30,5 @@ angular.module('missileDefense.mouseService', [])
           ctx.closePath();
         }
       }
-    }
-  }])
+    };
+  }]);

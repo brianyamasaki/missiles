@@ -11,16 +11,11 @@ angular.module('missileDefense.main', ['ngRoute'])
 
   .controller('MissileDefenseCtrl', ['$scope', function(scope ) {
     scope.gameState = 'notStarted';
-    scope.isPaused = function() {
-      return scope.gameState == 'paused';
-    }
-    scope.isRunning = function() {
-      return scope.gameState == 'running';
-    }
+    scope.level = 2;
   }])
 
   .directive('missileDefense', ['$window', 'ProjectileService', 'LauncherService', 'MouseService', 'ExplosionService', 'EnemyMissileService', 'ScoringService', 'UtilService', 'GroundService', 'CityService',
-    function(window, projectileService, launcherService, mouseService, explosionService, enemyMissileService, scoringService, utilService, groundService, cityService) {
+    function(window, ProjectileService, LauncherService, MouseService, ExplosionService, EnemyMissileService, ScoringService, UtilService, GroundService, CityService) {
     return {
       restrict: 'E',
       replace: true,
@@ -51,7 +46,7 @@ angular.module('missileDefense.main', ['ngRoute'])
         function drawScore(dt) {
           ctx.fillStyle = options.clrRain;
           ctx.font = "16pt Helvetica, Arial, sans serif";
-          ctx.fillText(scoringService.getScore().toString(), 20, ctxHeight-20);
+          ctx.fillText(ScoringService.getScore().toString(), 20, ctxHeight-20);
         }
 
         function drawStartScreen() {
@@ -66,18 +61,18 @@ angular.module('missileDefense.main', ['ngRoute'])
           ctx.fillText("Paused - Click to restart", ctxWidth/2 - 140, ctxHeight/2);
         }
 
-        function gameOver() {
+        function drawGameOver() {
           ctx.fillStyle = "red";
           ctx.font = '20pt Helvetica, Arial, sans serif';
           ctx.fillText('Game Over', ctxWidth/2 - 35, ctxHeight/2);
-          scoringService.resetScore();
         }
 
         function physics(dt) {
-          projectileService.physics(dt);
-          launcherService.physics(dt);
-          explosionService.physics(dt);
-          enemyMissileService.physics(dt);
+          ProjectileService.physics(dt);
+          LauncherService.physics(dt);
+          ExplosionService.physics(dt);
+          EnemyMissileService.physics(dt);
+          CityService.physics(dt);
         }
 
         function drawBackground() {
@@ -88,13 +83,13 @@ angular.module('missileDefense.main', ['ngRoute'])
         }
 
         function drawGameFrame() {
-          groundService.draw(ctx);
-          cityService.draw(ctx);
-          launcherService.draw(ctx);
-          projectileService.draw(ctx);
-          explosionService.draw(ctx);
-          enemyMissileService.draw(ctx);
-          mouseService.draw(ctx);
+          GroundService.draw(ctx);
+          CityService.draw(ctx);
+          LauncherService.draw(ctx);
+          ProjectileService.draw(ctx);
+          ExplosionService.draw(ctx);
+          EnemyMissileService.draw(ctx);
+          MouseService.draw(ctx);
         }
 
         function animate(now) {
@@ -102,6 +97,9 @@ angular.module('missileDefense.main', ['ngRoute'])
           drawBackground();
 
           switch(scope.gameState) {
+            case 'gameOver':
+              drawGameOver();
+              break;
             case 'notStarted':
               drawStartScreen();
               break;
@@ -130,26 +128,34 @@ angular.module('missileDefense.main', ['ngRoute'])
 
         scope.pauseGame =  function() {
           stopAnimation();
-        }
+        };
 
         scope.restartGame = function() {
           scope.gameState = 'running';
-        }
+        };
 
         function stopAnimation() {
           scope.gameState = 'paused';
         }
 
         function initWorld() {
-          level = 1;
-          projectileService.init(ctxWidth, ctxHeight, level);
-          launcherService.create(ctxWidth, ctxHeight, level);
-          enemyMissileService.create(ctxWidth, ctxHeight, level);
-          groundService.create(ctxWidth, ctxHeight, level);
-          cityService.init(ctxWidth, ctxHeight, level);
+          scope.levels = [];
+          window.gameData.forEach(function(level, index) {
+            scope.levels.push({
+              name: level.levelName || ('Level' + index),
+              levelNumber: index + 1
+            });
+          });
+          ScoringService.resetScore();
+          CityService.init(ctxWidth, ctxHeight, scope.level);
+          ProjectileService.init(ctxWidth, ctxHeight, scope.level);
+          LauncherService.init(ctxWidth, ctxHeight, scope.level);
+          EnemyMissileService.init(ctxWidth, ctxHeight, scope.level);
+          GroundService.init(ctxWidth, ctxHeight, scope.level);
         }
 
         function init() {
+          scope.level = 1;
           canvasOffset = element.offset();
           initWorld();
         }
@@ -157,17 +163,28 @@ angular.module('missileDefense.main', ['ngRoute'])
         init();
         startAnimation();
 
+        scope.$on('gameOver', function (event, message) {
+          scope.gameState = 'gameOver';
+        });
         element.on('click', function(event) {
-          if (scope.gameState !== 'running') {
-            scope.gameState = 'running';
-          } else {
-            launcherService.fireProjectile();   
+          switch(scope.gameState) {
+            case 'gameOver':
+              scope.gameState = 'running';
+              initWorld(); 
+              break;
+            case 'running': 
+              LauncherService.fireProjectile();
+              break;   
+            default:
+              scope.gameState = 'running';
+              EnemyMissileService.restart();
+              break;
           }
         });
 
         element.on('mouseover', function (event) {
           element.on('mousemove', function (event) {
-            mouseService.mouseMove(event.pageX - canvasOffset.left, event.pageY - canvasOffset.top);
+            MouseService.mouseMove(event.pageX - canvasOffset.left, event.pageY - canvasOffset.top);
           });
         });
 
@@ -181,8 +198,8 @@ angular.module('missileDefense.main', ['ngRoute'])
           element.off('mouseout');
           element.off('mouseover');
           element.off('mousemove');
-          enemyMissileService.pause();
+          EnemyMissileService.pause();
         });
       }
-    }
-  }])
+    };
+  }]);

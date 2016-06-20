@@ -13,5 +13,5 @@ angular.module('missileDefense.scoringService', [])
       destroyedMissile: function(points) {
         score += points;
       }
-    }
-  }])
+    };
+  }]);
