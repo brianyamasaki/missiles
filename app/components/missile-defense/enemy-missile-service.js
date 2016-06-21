@@ -18,11 +18,16 @@ angular.module('missileDefense.enemyMissileService', [])
       var cities = CityService.getCities(),
         city,
         xFrom = Math.random() * context.width;
+      cities = cities.filter(function(city) {
+        return !city.destroyed;
+      });
       if (cities.length > 1) {
         city = cities[Math.floor(Math.random()*cities.length)]; 
         // console.log('Target city coordinates are ' + city.x + 'x' + city.y);
+      } else if (cities.length === 1) {
+        city = {x: cities[0].x, y: cities[0].y};
       } else {
-        city = {x: Math.random() * context.width, y: 1};
+        city = {x: Math.random(), y: context.dy};
       }
       
       missiles.push({
@@ -46,6 +51,8 @@ angular.module('missileDefense.enemyMissileService', [])
         context.width = ctxWidth;
         context.height = ctxHeight;
         missiles = [];
+        missileImage = undefined;
+        
         if (levelData.missileImage) {
           ImageService.loadImage(levelData.missileImage)
             .then(function(image) {

@@ -44,6 +44,7 @@ angular.module('missileDefense.launcherService', [])
             muzzle: {}
           });
         });
+        launcherImage = undefined;
         if (levelData.launcherImage) {
           ImageService.loadImage(levelData.launcherImage)
             .then(function(image) {

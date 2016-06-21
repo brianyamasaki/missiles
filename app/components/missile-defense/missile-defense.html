@@ -1,8 +1,12 @@
 <h1 class="text-center">Missile Defense</h1>
 <div class="text-center">
-  <button class="btn btn-primary" ng-click="pauseGame()">Pause</button>
-  <button class="btn btn-primary" ng-click="restartGame()">Restart</button>
-  <select name="levels" id="levels" ng-model="level" ng-options="level.levelNumber as level.name for level in levels"></select>
+  <div>
+    <button class="btn btn-primary" ng-click="pauseGame()">Pause</button>
+    <button class="btn btn-primary" ng-click="restartGame()">Restart</button>
+    <select name="levels" id="levels" ng-model="level" ng-change="levelChange()"
+      ng-options="level.index as level.name for level in levels">
+    </select>
+  </div>
   <missile-defense></missile-defense>
   <file-input></file-input>
 </div>

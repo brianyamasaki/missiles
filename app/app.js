@@ -9,7 +9,6 @@ angular.module('missileDefense', [
   'missileDefense.explosionService',
   'missileDefense.groundService',
   'missileDefense.launcherService',
-  'missileDefense.main',
   'missileDefense.mouseService',
   'missileDefense.projectileService',
   'missileDefense.scoringService',
@@ -17,7 +16,6 @@ angular.module('missileDefense', [
   'missileDefense.fileInput',
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
-  $locationProvider.hashPrefix('!');
 
   $routeProvider.otherwise({redirectTo: '/'});
 }]);

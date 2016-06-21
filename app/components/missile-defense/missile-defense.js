@@ -43,6 +43,11 @@ angular.module('missileDefense.main', ['ngRoute'])
           scope.gameState = 'notStarted';
         });
 
+        scope.levelChange = function () {
+          initWorld();
+          scope.gameState = 'notStarted';
+        }
+
         function drawScore(dt) {
           ctx.fillStyle = options.clrRain;
           ctx.font = "16pt Helvetica, Arial, sans serif";
@@ -143,7 +148,7 @@ angular.module('missileDefense.main', ['ngRoute'])
           window.gameData.forEach(function(level, index) {
             scope.levels.push({
               name: level.levelName || ('Level' + index),
-              levelNumber: index + 1
+              index: index
             });
           });
           ScoringService.resetScore();
@@ -166,6 +171,7 @@ angular.module('missileDefense.main', ['ngRoute'])
         scope.$on('gameOver', function (event, message) {
           scope.gameState = 'gameOver';
         });
+
         element.on('click', function(event) {
           switch(scope.gameState) {
             case 'gameOver':

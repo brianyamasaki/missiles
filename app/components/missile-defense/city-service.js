@@ -9,6 +9,7 @@ angular.module('missileDefense.cityService', [])
     return {
       init: function(contextWidth, contextHeight, level) {
         var levelData = window.gameData[level];
+        cityImage = undefined;
         if (levelData.cityImage) {
           ImageService.loadImage(levelData.cityImage)
             .then(function(image) {
@@ -35,18 +36,18 @@ angular.module('missileDefense.cityService', [])
         return cities;
       },
       physics: function(dt) {
-        if (!cities.find(function(city) {
-          return !city.destroyed
-        })) {
-          $rootScope.$broadcast('gameOver', 'Your Cities are all destroyed');
+        cities = cities.filter(function(city) {
+          return !city.destroyed;
+        });
+        if (cities.length === 0) {
+          setTimeout(function() {
+            $rootScope.$broadcast('gameOver', 'Your Cities are all destroyed');
+          }, 5000);
         }
       },
       draw: function(ctx) {
         if (cityImage) {
           cities.forEach(function(city) {
-            if (city.destroyed) {
-              return;
-            }
             ctx.save();
             ctx.translate(city.x, city.y);
             ctx.drawImage(cityImage, cityImageCenter.x, cityImageCenter.y);
@@ -55,11 +56,11 @@ angular.module('missileDefense.cityService', [])
           });
         } else {
           cities.forEach(function(city) {
-            if (city.destroyed) {
-              return;
-            }
             ctx.fillStyle = 'black';
-            ctx.arc(city.x, city.y, 100, Math.PI, Math.PI*2);
+            ctx.beginPath();
+            ctx.arc(city.x, city.y, 50, Math.PI, Math.PI*2);
+            ctx.fill();
+            ctx.closePath();
           });
         }
       }

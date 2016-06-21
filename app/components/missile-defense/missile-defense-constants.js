@@ -6,6 +6,12 @@ var gameData = [
     launchers: [
       {x: 0.5, y: 0.5}
     ],
+    cities: [
+      { x: 0.2, y: .95},
+      { x: 0.4, y: .95},
+      { x: 0.7, y: .95},
+      { x: 0.9, y: .95}
+    ],
     grounds: [
       {
         fillStyle: 'darkgray',

@@ -10,6 +10,7 @@ angular.module('missileDefense.projectileService', [])
     return {
       init: function(contextDx, contextDy, level) {
         var levelData = window.gameData[level];
+        projectileImage = undefined;
         if (levelData.projectileImage) {
           imageService.loadImage(levelData.projectileImage)
             .then(function(image) {
