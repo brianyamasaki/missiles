@@ -82,6 +82,16 @@
           { "x": 0.80, "y": 0.75}
         ]
       }
-    ] 
+    ],
+    "backgroundImage":  "img/missile-defense/img/background1.jpg",
+    "animation": { 
+      "x": 250,
+      "y": 250,
+      "dx": 50,
+      "dy": 50,
+      "frames": 3,
+      "fps": 3,
+      "filepath" : "img/missile-defense/img/Megaman moving.png" 
+    } 
   }
 ]

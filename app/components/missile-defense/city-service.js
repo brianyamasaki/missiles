@@ -10,6 +10,7 @@ angular.module('missileDefense.cityService', [])
       init: function(contextWidth, contextHeight, level) {
         var levelData = window.gameData[level];
         cityImage = undefined;
+        cities = [];
         if (levelData.cityImage) {
           ImageService.loadImage(levelData.cityImage)
             .then(function(image) {
@@ -23,7 +24,6 @@ angular.module('missileDefense.cityService', [])
             });
         }
         if (levelData.cities) {
-          cities = [];
           levelData.cities.forEach(function(city) {
             cities.push({
               x: city.x * contextWidth,

@@ -4,10 +4,10 @@ angular.module('missileDefense.enemyMissileService', [])
   .factory('EnemyMissileService', ['ScoringService', 'GroundService', 'ImageService', 'CityService', 'ExplosionService', 'UtilService',
   function(ScoringService, GroundService, ImageService, CityService, ExplosionService, UtilService) {
     var missiles = [];
-    var tCreated;
     var missileInLevel = 0;
     var context = {};
-    var interval;
+    var timeToNext;
+    var dtime = 1.500;
     var missileImage;
     var missileImageCenter = {
       x: 0,
@@ -37,21 +37,26 @@ angular.module('missileDefense.enemyMissileService', [])
         angle: -(Math.atan2(city.x - xFrom,
             city.y - 0) - Math.PI/2),
         radius: 4,
-        speed: 80
+        speed: 80 + Math.random() * 30
       });
     }
-    function startMissiles () {
-      interval = setInterval(createMissile, 1500);
+    
+    function timePasses(dt) {
+      timeToNext -= dt;
+      if (timeToNext < 0) {
+        createMissile();
+        timeToNext = dtime;
+      }
     }
 
     return {
       init: function (ctxWidth, ctxHeight, level) {
         var levelData = window.gameData[level];
-        tCreated = new Date().getTime();
         context.width = ctxWidth;
         context.height = ctxHeight;
         missiles = [];
         missileImage = undefined;
+        timeToNext = 1.500;
         
         if (levelData.missileImage) {
           ImageService.loadImage(levelData.missileImage)
@@ -66,18 +71,12 @@ angular.module('missileDefense.enemyMissileService', [])
             });
         }
       },
-      pause: function () {
-        clearInterval(interval);
-      },
-      unpause: function () {
-        startMissiles();
-      },
       restart: function() {
         missiles = [];
-        startMissiles();
       },
       physics: function (dt) {
         var cityDestroyed;
+        timePasses(dt);
         missiles = missiles.filter(function(missile) {
           if (missile.destroyed) {
             ScoringService.destroyedMissile(10);
@@ -137,8 +136,9 @@ angular.module('missileDefense.enemyMissileService', [])
         }
       },
       getMissiles: function() {
-        
         return missiles;
+      },
+      destroy: function() {
       }
     }
   }]);

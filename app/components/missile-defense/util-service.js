@@ -57,24 +57,4 @@ angular.module('missileDefense.utilService' , [])
         return inside;
       }
     };
-  }])  
-  .factory('ImageService', ['$q', function($q) {
-    var images = [];
-    return {
-      loadImage: function (filepath) {
-        var deferred = $q.defer(),
-          img = new Image(),
-          iImage = images.length;
-        img.onload = function(){
-          images.push({
-            src: filepath,
-            img: img
-          });
-          deferred.resolve(img);
-        };
-        img.src = filepath;
-
-        return deferred.promise;
-      }
-    };
   }]);

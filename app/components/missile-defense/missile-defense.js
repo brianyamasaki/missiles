@@ -11,11 +11,11 @@ angular.module('missileDefense.main', ['ngRoute'])
 
   .controller('MissileDefenseCtrl', ['$scope', function(scope ) {
     scope.gameState = 'notStarted';
-    scope.level = 2;
+    scope.level = 1;
   }])
 
-  .directive('missileDefense', ['$window', 'ProjectileService', 'LauncherService', 'MouseService', 'ExplosionService', 'EnemyMissileService', 'ScoringService', 'UtilService', 'GroundService', 'CityService',
-    function(window, ProjectileService, LauncherService, MouseService, ExplosionService, EnemyMissileService, ScoringService, UtilService, GroundService, CityService) {
+  .directive('missileDefense', ['$window', 'ProjectileService', 'LauncherService', 'MouseService', 'ExplosionService', 'EnemyMissileService', 'ScoringService', 'UtilService', 'GroundService', 'CityService', 'BackgroundService', 'AnimationService',
+    function(window, ProjectileService, LauncherService, MouseService, ExplosionService, EnemyMissileService, ScoringService, UtilService, GroundService, CityService, BackgroundService, AnimationService) {
     return {
       restrict: 'E',
       replace: true,
@@ -40,12 +40,21 @@ angular.module('missileDefense.main', ['ngRoute'])
         scope.$on('fileInputReceived', function(event, jsonObject) {
           window.gameData = jsonObject;
           initWorld();
-          scope.gameState = 'notStarted';
+          setGameState('notStarted');
         });
 
         scope.levelChange = function () {
           initWorld();
           scope.gameState = 'notStarted';
+        }
+
+        function setGameState(state) {
+          switch(scope.gameState) {
+            case 'paused':
+              timeLast = 0;
+              break;
+          }
+          scope.gameState = state;
         }
 
         function drawScore(dt) {
@@ -78,6 +87,9 @@ angular.module('missileDefense.main', ['ngRoute'])
           ExplosionService.physics(dt);
           EnemyMissileService.physics(dt);
           CityService.physics(dt);
+          if (dt > .1) {
+            console.log(dt);
+          }
         }
 
         function drawBackground() {
@@ -99,7 +111,7 @@ angular.module('missileDefense.main', ['ngRoute'])
 
         function animate(now) {
           var dt;
-          drawBackground();
+          BackgroundService.draw(ctx);
 
           switch(scope.gameState) {
             case 'gameOver':
@@ -136,14 +148,15 @@ angular.module('missileDefense.main', ['ngRoute'])
         };
 
         scope.restartGame = function() {
-          scope.gameState = 'running';
+          setGameState('running');
         };
 
         function stopAnimation() {
-          scope.gameState = 'paused';
+          setGameState('paused');
         }
 
         function initWorld() {
+          var levelData;
           scope.levels = [];
           window.gameData.forEach(function(level, index) {
             scope.levels.push({
@@ -157,10 +170,14 @@ angular.module('missileDefense.main', ['ngRoute'])
           LauncherService.init(ctxWidth, ctxHeight, scope.level);
           EnemyMissileService.init(ctxWidth, ctxHeight, scope.level);
           GroundService.init(ctxWidth, ctxHeight, scope.level);
+          BackgroundService.init(ctxWidth, ctxHeight);
+          levelData = window.gameData[scope.level]; 
+          if (levelData.backgroundImage) {
+            BackgroundService.loadBackground(levelData.backgroundImage);
+          }
         }
 
         function init() {
-          scope.level = 1;
           canvasOffset = element.offset();
           initWorld();
         }
@@ -169,20 +186,23 @@ angular.module('missileDefense.main', ['ngRoute'])
         startAnimation();
 
         scope.$on('gameOver', function (event, message) {
-          scope.gameState = 'gameOver';
+          setGameState('gameOver');
         });
 
         element.on('click', function(event) {
           switch(scope.gameState) {
             case 'gameOver':
-              scope.gameState = 'running';
               initWorld(); 
+              setGameState('running');
               break;
             case 'running': 
               LauncherService.fireProjectile();
-              break;   
+              break;
+            case 'paused':
+              setGameState('running');
+              break;
             default:
-              scope.gameState = 'running';
+              setGameState('running');
               EnemyMissileService.restart();
               break;
           }
@@ -199,12 +219,12 @@ angular.module('missileDefense.main', ['ngRoute'])
         });
 
         scope.$on('$destroy', function (event) {
-          scope.gameState = 'paused';
+          setGameState('paused');
           element.off('click');
           element.off('mouseout');
           element.off('mouseover');
           element.off('mousemove');
-          EnemyMissileService.pause();
+          EnemyMissileService.destroy();
         });
       }
     };

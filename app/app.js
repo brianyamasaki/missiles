@@ -13,6 +13,7 @@ angular.module('missileDefense', [
   'missileDefense.projectileService',
   'missileDefense.scoringService',
   'missileDefense.utilService',
+  'missileDefense.animationService',
   'missileDefense.fileInput',
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {

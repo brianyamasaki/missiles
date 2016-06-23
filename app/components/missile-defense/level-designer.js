@@ -21,8 +21,7 @@ angular.module('myApp.levelDesigner', [])
                 },
                 canvasOffset,
                 timeLast,
-                isStarted,
-                interval;
+                isStarted;
           
             ctx = scope.ctx = element[0].getContext('2d');
 
