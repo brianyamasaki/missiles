@@ -36,6 +36,7 @@ angular.module('missileDefense.animationService', [])
 
         ImageService.loadImage(animation.filepath)
           .then(function(img) {
+            var ianim;
             if (!animation.frames) {
               alert('animation ' + filepath + ' must include animation.frames')
             }
@@ -44,30 +45,24 @@ angular.module('missileDefense.animationService', [])
             animation.dy = img.naturalHeight;
             animation.dtFrame = 1 / animation.fps;
             animation.dtLength = animation.frames * animation.dtFrame;
+            ianim = animations.length;
             animations.push(animation);
-            deferred.resolve(animation);
+            deferred.resolve(ianim);
           });
 
         return deferred.promise;
       },
-      physics: function(dt) {
-        animations.forEach(function(animation) {
-          if (!animation.dt) {
-            animation.dt = dt;
-          } else {
-            animation.dt += dt;
-          }
-        });
-      },
-      drawAnimation: function(ctx, animation, x, y, angle) {
-        var iframe = Math.floor(animation.dt % animation.dtLength / animation.dtFrame);
+      drawAnimation: function(ctx, ianim, x, y, angle, xOffset, yOffset, dt) {
+        var animation = animations[ianim];
+        var iframe = Math.floor(dt % animation.dtLength / animation.dtFrame);
         var xFrameOffset = animation.dx * iframe;
+        // console.log('animation frame #' + iframe + ' and xFrameOffset ' + xFrameOffset);
 
         ctx.save();
 
         ctx.translate(x, y);
         ctx.rotate(angle);
-        ctx.drawImage(animation.img, xFrameOffset, 0, animation.dx, animation.dy, 0, 0, animation.dx, animation.dy);
+        ctx.drawImage(animation.img, xFrameOffset, 0, animation.dx, animation.dy, xOffset, yOffset, animation.dx, animation.dy);
         ctx.restore();
       }
     };

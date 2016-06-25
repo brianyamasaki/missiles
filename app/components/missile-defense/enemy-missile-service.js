@@ -58,12 +58,14 @@ angular.module('missileDefense.enemyMissileService', [])
         missileImage = undefined;
         timeToNext = 1.500;
         
-        if (levelData.missileImage) {
-          ImageService.loadImage(levelData.missileImage)
+        if (levelData.missileImage && levelData.missileImage.filepath) {
+          ImageService.loadImage(levelData.missileImage.filepath)
             .then(function(image) {
               missileImage = image;
-              if (levelData.missileImageCenter) {
-                missileImageCenter = levelData.missileImageCenter;
+              if (levelData.missileImage.imageCenter) {
+                missileImageCenter = levelData.missileImage.imageCenter;
+              } else {
+                missileImageCenter = {x:0, y:0};
               }
             })
             .catch(function() {

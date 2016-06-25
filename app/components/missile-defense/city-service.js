@@ -12,11 +12,13 @@ angular.module('missileDefense.cityService', [])
         cityImage = undefined;
         cities = [];
         if (levelData.cityImage) {
-          ImageService.loadImage(levelData.cityImage)
+          ImageService.loadImage(levelData.cityImage.filepath)
             .then(function(image) {
               cityImage = image;
-              if (levelData.cityImageCenter) {
-                cityImageCenter = levelData.cityImageCenter;
+              if (levelData.cityImage.imageCenter) {
+                cityImageCenter = levelData.cityImage.imageCenter;
+              } else {
+                cityImageCenter = {x:0, y:0};
               }
             })
             .catch(function() {

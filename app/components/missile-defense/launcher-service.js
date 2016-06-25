@@ -45,16 +45,18 @@ angular.module('missileDefense.launcherService', [])
           });
         });
         launcherImage = undefined;
-        if (levelData.launcherImage) {
-          ImageService.loadImage(levelData.launcherImage)
+        if (levelData.launcherImage && levelData.launcherImage.filepath) {
+          ImageService.loadImage(levelData.launcherImage.filepath)
             .then(function(image) {
               launcherImage = image;
-              if (levelData.launcherImageCenter) {
-                launcherImageCenter = levelData.launcherImageCenter;
+              if (levelData.launcherImage.imageCenter) {
+                launcherImageCenter = levelData.launcherImage.imageCenter;
+              } else {
+                launcherImageCenter = {x:0, y:0};
               }
             })
             .catch(function() {
-              console.error('launcher image file ' + levelData.launcherImage + ' not loaded');
+              console.error('launcher image file ' + levelData.launcherImage.filepath + ' not loaded');
             });
         }
       },

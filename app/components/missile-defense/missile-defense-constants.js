@@ -39,19 +39,33 @@ var gameData = [
     ]
   },
   { // level 1
-    levelNumber: 1,
-    levelName: "First Custom Level",
-    launcherImage: 'img/missile-defense/img/launcher1.png',
-    launcherImageCenter: {x: -25, y: -25 },
-    launchers: [
-      {x: 0.78, y: 0.6}
+    "levelNumber": 1,
+    "levelName": "First Custom Level",
+    "launcherImage": {
+      "filepath": "img/missile-defense/img/launcher1.png",
+      "imageCenter":  {"x": -25, "y": -25 }
+    },
+    "launchers": [
+      {"x": 0.78, "y": 0.6}
     ],
-    missileImage: 'img/missile-defense/img/missile1.png',
-    missileImageCenter: { x: -21, y: -5},
-    projectileImage: 'img/missile-defense/img/bullet.png',
-    projectileImageCenter: {x: -10, y:-10},
-    cityImage: 'img/missile-defense/img/city.png',
-    cityImageCenter: { x: -50, y: -50},
+    "missileImage": {
+      "filepath": "img/missile-defense/img/missile1.png", 
+      "imageCenter": { "x": -10, "y": -5}
+    },
+    "projectileAnimation": {
+      "filepath": "img/missile-defense/img/bullet.animation.png",
+      "frames": 15,
+      "fps": 60,
+      "animationCenter": {"x": -10, "y":-10}
+    },
+    "projectileImage": {
+      "filepath": "img/missile-defense/img/bullet.png",
+      "imageCenter": {"x": -10, "y":-10}
+    },
+    "cityImage": {
+      "filepath" : "img/missile-defense/img/city.png", 
+      "imageCenter": { "x": -50, "y": -50}
+    },
     cities: [
       { x: 0.15, y: .8},
       { x: 0.3, y: .8},
